@@ -1,11 +1,17 @@
+.title{
+  text-align: center;
+  text-transform: uppercase;
+  font-family: cursive;
+  justify-content: center;
+  font-size: 65px;
+  margin-top: 50px;
+}
 .jumbotron {
   margin-top: 1.3rem;
+  text-align: center;
 }
 
 .jumbotron h2 {
   margin-bottom: 1.4rem;
 }
 
-.jumbotron ul {
-  margin-top: 1.6rem;
-}

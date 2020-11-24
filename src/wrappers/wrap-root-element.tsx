@@ -1,5 +1,5 @@
 import React from "react"
-import IdentityProvider from "../context/authContext"
+import IdentityProvider from "../context/NetlifyContext"
 import { ApolloProvider } from "@apollo/client"
 import { client } from "../apollo/client"
 

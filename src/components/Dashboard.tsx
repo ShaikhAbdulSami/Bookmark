@@ -1,11 +1,11 @@
 import React, { useContext, useRef, useState } from "react"
 import Button from "react-bootstrap/Button"
 import { RouteComponentProps } from "@reach/router"
-import { identityContext } from "../context/authContext"
+import { identityContext } from "../context/NetlifyContext"
 import Form from "react-bootstrap/Form"
 import ListGroup from "react-bootstrap/ListGroup"
 import { useQuery, useMutation, gql } from "@apollo/client"
-const styles = require("./userArea.module.css")
+const styles = require("./Dashboard.module.css")
 import Jumbotron from "react-bootstrap/Jumbotron"
 
 const ADD_TODO = gql`
@@ -62,12 +62,12 @@ export default function UserArea(props: RouteComponentProps) {
         onClick={() => {
           identity.logout()
         }}
-        variant="primary"
+        variant="outline-dark"
       >
         Logout
       </Button>
 
-      <h2>{user.user_metadata.full_name}'s Notebook</h2>
+      <h2>{user.user_metadata.full_name}'s List</h2>
 
       <div className={styles.inputContainer}>
         <Form.Control
@@ -84,6 +84,7 @@ export default function UserArea(props: RouteComponentProps) {
             inputRef.current.value = ""
             await refetch()
           }}
+          variant="outline-dark"
         >
           Add Task
         </Button>
@@ -123,7 +124,7 @@ export default function UserArea(props: RouteComponentProps) {
           onClick={() => {
             identity.open()
           }}
-          variant="primary"
+          variant="outline-dark"
         >
           Login
         </Button>

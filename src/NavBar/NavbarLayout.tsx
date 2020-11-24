@@ -2,20 +2,21 @@ import React, { ReactNode, useContext } from "react"
 import { Navbar, Nav, Container } from "react-bootstrap"
 import "bootstrap/dist/css/bootstrap.min.css"
 import { Link } from "gatsby"
-import { identityContext } from "../context/authContext"
-const styles = require("./pageLayout.module.css")
+import { identityContext } from "../context/NetlifyContext"
+import Footer from '../components/Footer'
+const styles = require("./NavbarLayout.module.css")
 
 interface props {
   children: ReactNode
 }
 
-export default function PageLayout({ children }: props) {
+export default function NavbarLayout({ children }: props) {
   const { user } = useContext(identityContext)
 
   return (
     <div>
       <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
-        <Navbar.Brand>Todo-App</Navbar.Brand>
+        <Navbar.Brand>Shaikh Todo-App</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="mr-auto">
@@ -40,6 +41,7 @@ export default function PageLayout({ children }: props) {
       </Navbar>
 
       <Container fluid>{children}</Container>
+      <Footer />
     </div>
   )
 }

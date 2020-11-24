@@ -1,14 +1,14 @@
 import React from "react"
-import PageLayout from "../pageLayout/pageLayout"
+import NavbarLayout from "../NavBar/NavbarLayout"
 import { Router } from "@reach/router"
-import UserArea from "../components/userArea"
+import Dashboard from "../components/Dashboard"
 
-export default function Dashboard() {
+export default function App() {
   return (
-    <PageLayout>
+    <NavbarLayout>
       <Router>
-        <UserArea path="/dashboard" />
+        <Dashboard path="/dashboard" />
       </Router>
-    </PageLayout>
+    </NavbarLayout>
   )
 }

@@ -1,7 +1,7 @@
 import React, { useContext } from "react"
-import PageLayout from "../pageLayout/pageLayout"
+import NavbarLayout from "../NavBar/NavbarLayout"
 import Button from "react-bootstrap/Button"
-import { identityContext } from "../context/authContext"
+import { identityContext } from "../context/NetlifyContext"
 import Jumbotron from "react-bootstrap/Jumbotron"
 const styles = require("./index.module.css")
 
@@ -9,16 +9,16 @@ export default function Home() {
   const { user, identity } = useContext(identityContext)
 
   return (
-    <PageLayout>
+    <NavbarLayout>
       <Jumbotron className={styles.jumbotron}>
-        <h2>Let us keep track of things for you!</h2>
+      <h2 className={styles.title}>Welcome to Shaikh Todo-App</h2>
 
         {!user ? (
           <Button
             onClick={() => {
               identity.open()
             }}
-            variant="primary"
+            variant="outline-dark"
           >
             Login
           </Button>
@@ -27,18 +27,12 @@ export default function Home() {
             onClick={() => {
               identity.logout()
             }}
-            variant="primary"
+            variant="outline-dark"
           >
             Logout
           </Button>
         )}
-        <ul>
-          <li>Easy to use</li>
-          <li>User friendly interface</li>
-          <li>Cloud storage</li>
-          <li>No hidden charges</li>
-        </ul>
       </Jumbotron>
-    </PageLayout>
+    </NavbarLayout>
   )
 }
