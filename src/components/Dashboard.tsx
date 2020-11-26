@@ -87,15 +87,16 @@ export default function UserArea(props: RouteComponentProps) {
           className={styles.input}
           ref={inputRef}
           type="text"
-          placeholder="Add a new task"
+          placeholder="Add Page Title"
         />
         <br />
         <Form.Control
           className={styles.input}
           ref={inputUrl}
           type="text"
-          placeholder="Add a new task"
+          placeholder="Add Page URL"
         />
+        <br />
         <Button
           className={styles.addTaskButton}
           onClick={async () => {
@@ -121,7 +122,11 @@ export default function UserArea(props: RouteComponentProps) {
               <ListGroup.Item key={book.id}>
                 <div>
                   <Button onClick={() => removeBookmarkSubmit(book.id)}>DELETE</Button>
-                  <p className={styles.todoText}>{book.value}</p>
+                  <p className={styles.todoText}>{book.title}</p>
+                  <br />
+                  <p className={styles.todoText}>{book.url}</p>
+                  <br />
+                  <Button href={book.url}>Go to link</Button>
                 </div>
               </ListGroup.Item>
             ))
