@@ -46,15 +46,6 @@ export default function UserArea(props: RouteComponentProps) {
   const { user, identity } = useContext(identityContext)
   const inputRef = useRef<any>()
   const inputUrl = useRef<any>()
-  const removeBookmarkSubmit = (id) => {
-    console.log(id);
-    removeBookmark({
-      variables: {
-        id
-      },
-      refetchQueries: [{ query: BookMarksQuery }],
-    });
-  };
 
 
   React.useEffect(()=>{
@@ -122,7 +113,7 @@ export default function UserArea(props: RouteComponentProps) {
               <ListGroup.Item key={book.id}>
                 <div>
                   <Button onClick={async () => {
-                            await removeBookmarkSubmit(book.id)
+                            await removeBookmark(book.id)
                             console.log("before", book.id)
                             await refetch()
                           }}>DELETE
