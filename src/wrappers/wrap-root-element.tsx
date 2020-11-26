@@ -1,10 +1,7 @@
-import React from "react"
-import IdentityProvider from "../context/NetlifyContext"
-import { ApolloProvider } from "@apollo/client"
-import { client } from "../apollo/client"
+import React from "react";
+import { ApolloProvider } from "@apollo/client";
+import { client } from "../apollo/client";
 
-export default ({ element }) => (
-  <ApolloProvider client={client}>
-    <IdentityProvider>{element}</IdentityProvider>
-  </ApolloProvider>
-)
+export const wrapRootElement = ({ element }) => (
+  <ApolloProvider client={client}>{element}</ApolloProvider>
+);

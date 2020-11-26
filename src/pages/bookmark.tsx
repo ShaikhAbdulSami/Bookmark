@@ -7,7 +7,7 @@ export default function App() {
   return (
     <NavbarLayout>
       <Router>
-        <Dashboard path="/dashboard" />
+        <Dashboard path="/bookmark" />
       </Router>
     </NavbarLayout>
   )

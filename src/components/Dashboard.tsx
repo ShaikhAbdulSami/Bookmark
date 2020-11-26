@@ -1,9 +1,8 @@
-import React, { useContext, useRef, useState } from "react"
+import React, {  useRef } from "react"
 import Button from "react-bootstrap/Button"
 import { RouteComponentProps } from "@reach/router"
-import { identityContext } from "../context/NetlifyContext"
 import Form from "react-bootstrap/Form"
-import ListGroup from "react-bootstrap/ListGroup"
+import Card from 'react-bootstrap/Card'
 import { useQuery, useMutation, gql } from "@apollo/client"
 const styles = require("./Dashboard.module.css")
 import Jumbotron from "react-bootstrap/Jumbotron"
@@ -38,40 +37,28 @@ const RemoveBookMarkMutation = gql`
 `;
 
 
-export default function UserArea(props: RouteComponentProps) {
+export default function Dashboard(props: RouteComponentProps) {
   const [addBookmark] = useMutation(AddBookMarkMutation)
   const [removeBookmark] = useMutation(RemoveBookMarkMutation)
   let { loading, error, data, refetch } = useQuery(BookMarksQuery,{fetchPolicy:"cache-first"})
 
-  const { user, identity } = useContext(identityContext)
   const inputRef = useRef<any>()
   const inputUrl = useRef<any>()
 
-
-  React.useEffect(()=>{
-    async function fetchData(){
-        await refetch();
-    }
-
-    fetchData()
-
-  },[user])
-
+  const removeBookmarkSubmit = (id) => {
+    console.log(id);
+    removeBookmark({
+      variables: {
+        id: id,
+      },
+      refetchQueries: [{ query: BookMarksQuery }],
+    });
+  };
 
   return (
-  !!user ? (
     <Jumbotron className={styles.jumbotron}>
-      <Button disabled = {loading}
-        className={styles.logout}
-        onClick={() => {
-          identity.logout()
-        }}
-        variant="outline-dark"
-      >
-        Logout
-      </Button>
 
-      <h2>{user.user_metadata.full_name}'s List</h2>
+      <h2>Bookmark's List</h2>
 
       <div className={styles.inputContainer}>
         <Form.Control
@@ -102,47 +89,20 @@ export default function UserArea(props: RouteComponentProps) {
           Add Task
         </Button>
       </div>
-
-      <ListGroup variant="flush">
-        {(loading ) ? <div>Loading...</div> : 
-        error ? <div>{error.message}</div> : 
-          (data.bookmark.length === 0 ? (
-            <h5>Your todo list is empty</h5>
-          ) : (
-            data.bookmark.map(book => (
-              <ListGroup.Item key={book.id}>
-                <div>
-                  <Button onClick={async () => {
-                            await removeBookmark(book.id)
-                            console.log("before", book.id)
-                            await refetch()
-                          }}>DELETE
-                    </Button>
-                  <p className={styles.todoText}>{book.title}</p>
-                  <br />
-                  <p className={styles.todoText}>{book.url}</p>
-                  <br />
-                  <Button href={book.url}>Go to link</Button>
-                </div>
-              </ListGroup.Item>
-            ))
-          ))}
-      </ListGroup>
+      <div>
+        {data?.bookmark.map((book) => {
+          return(
+          <Card  key={book.id}>
+            <Card.Body>
+              <Card.Title>{book.title}</Card.Title>
+              <Card.Text>
+                {book.url}
+              </Card.Text>
+              <Button onClick={() => removeBookmarkSubmit(book.id)} variant="outline-danger" >Delete</Button>
+            </Card.Body>
+          </Card>
+        )})}
+      </div>
+      
     </Jumbotron>
-  ) : (
-    <div>
-      <Jumbotron className={styles.jumbotron}>
-        <h4>Please Login to view your dashboard</h4>
-        <Button
-          onClick={() => {
-            identity.open()
-          }}
-          variant="outline-dark"
-        >
-          Login
-        </Button>
-      </Jumbotron>
-    </div>
-  )
-  )
-}
+)}

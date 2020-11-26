@@ -1,37 +1,16 @@
-import React, { useContext } from "react"
+import React from "react"
 import NavbarLayout from "../NavBar/NavbarLayout"
-import Button from "react-bootstrap/Button"
-import { identityContext } from "../context/NetlifyContext"
 import Jumbotron from "react-bootstrap/Jumbotron"
+import  Button  from "react-bootstrap/Button"
 const styles = require("./index.module.css")
 
 export default function Home() {
-  const { user, identity } = useContext(identityContext)
 
   return (
     <NavbarLayout>
       <Jumbotron className={styles.jumbotron}>
-      <h2 className={styles.title}>Welcome to Shaikh Todo-App</h2>
-
-        {!user ? (
-          <Button
-            onClick={() => {
-              identity.open()
-            }}
-            variant="outline-dark"
-          >
-            Login
-          </Button>
-        ) : (
-          <Button
-            onClick={() => {
-              identity.logout()
-            }}
-            variant="outline-dark"
-          >
-            Logout
-          </Button>
-        )}
+      <h2 className={styles.title}>Welcome to Shaikh Bookmark App</h2>
+      <Button href="/bookmark" variant="outline-dark">View Bookmark</Button>
       </Jumbotron>
     </NavbarLayout>
   )
