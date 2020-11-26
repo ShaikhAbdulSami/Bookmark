@@ -24,7 +24,7 @@ const faunadb = require("faunadb"),
 
 const resolvers = {
   Query: {
-    todos: async (parent, args, {user}) => {
+    bookmark: async (parent, args, {user}) => {
       if (!user){
         return [];
       }
@@ -54,7 +54,7 @@ const resolvers = {
     }
   },
   Mutation:{
-      addTodo: async (_,{url,title},{user})=>{
+    addBookmark: async (_,{url,title},{user})=>{
 
         if (!user){
           throw new Error ("Must be authenticated to insert todos")
