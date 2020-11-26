@@ -8,40 +8,53 @@ import { useQuery, useMutation, gql } from "@apollo/client"
 const styles = require("./Dashboard.module.css")
 import Jumbotron from "react-bootstrap/Jumbotron"
 
-const ADD_TODO = gql`
-  mutation AddTodo($value: String!) {
-    addTodo(value: $value) {
+const BookMarksQuery = gql`
+  {
+    bookmark {
       id
+      title
+      url
     }
   }
-`
+`;
 
-const GET_TODOS = gql`
-  query GetTodos {
-    todos {
-      id
-      value
-      done
+const AddBookMarkMutation = gql`
+  mutation addBookmark(
+    $url: String!
+    $title: String!
+  ) {
+    addBookmark(url: $url,  title: $title) {
+      url
     }
   }
-`
+`;
 
-const UPDATE_TODO_DONE = gql`
-  mutation UpdateTodo($id: ID!) {
-    updateTodoDone(id: $id) {
-      value
-      done
+const RemoveBookMarkMutation = gql`
+  mutation removeBookmark($id: ID!) {
+    removeBookmark(id: $id) {
+      url
     }
   }
-`
+`;
+
 
 export default function UserArea(props: RouteComponentProps) {
-  const [addTodo] = useMutation(ADD_TODO)
-  const [updateTodoDone] = useMutation(UPDATE_TODO_DONE)
-  let { loading, error, data, refetch } = useQuery(GET_TODOS,{fetchPolicy:"cache-first"})
+  const [addBookmark] = useMutation(AddBookMarkMutation)
+  const [removeBookmark] = useMutation(RemoveBookMarkMutation)
+  let { loading, error, data, refetch } = useQuery(BookMarksQuery,{fetchPolicy:"cache-first"})
 
   const { user, identity } = useContext(identityContext)
   const inputRef = useRef<any>()
+  const inputUrl = useRef<any>()
+  const removeBookmarkSubmit = (id) => {
+    console.log(id);
+    removeBookmark({
+      variables: {
+        id: id,
+      },
+      refetchQueries: [{ query: BookMarksQuery }],
+    });
+  };
 
 
   React.useEffect(()=>{
@@ -76,12 +89,20 @@ export default function UserArea(props: RouteComponentProps) {
           type="text"
           placeholder="Add a new task"
         />
+        <br />
+        <Form.Control
+          className={styles.input}
+          ref={inputUrl}
+          type="text"
+          placeholder="Add a new task"
+        />
         <Button
           className={styles.addTaskButton}
           onClick={async () => {
-            await addTodo({ variables: { value: inputRef.current.value } })
-            console.log(inputRef.current.value)
+            await addBookmark({ variables: { title: inputRef.current.value , url: inputUrl.current.value} })
+            console.log(inputRef.current.value,inputUrl.current.value)
             inputRef.current.value = ""
+            inputUrl.current.value = ""
             await refetch()
           }}
           variant="outline-dark"
@@ -93,23 +114,14 @@ export default function UserArea(props: RouteComponentProps) {
       <ListGroup variant="flush">
         {(loading ) ? <div>Loading...</div> : 
         error ? <div>{error.message}</div> : 
-          (data.todos.length === 0 ? (
+          (data.bookmark.length === 0 ? (
             <h5>Your todo list is empty</h5>
           ) : (
-            data.todos.map(todo => (
-              <ListGroup.Item key={todo.id}>
+            data.bookmark.map(book => (
+              <ListGroup.Item key={book.id}>
                 <div>
-                  <Form.Check
-                    defaultChecked={todo.done}
-                    disabled={todo.done}
-                    className={styles.checkBox}
-                    type="checkbox"
-                    onClick={async e => {
-                      await updateTodoDone({ variables: { id: todo.id } })
-                      await refetch()
-                    }}
-                  />
-                  <p className={styles.todoText}>{todo.value}</p>
+                  <Button onClick={() => removeBookmarkSubmit(book.id)}>DELETE</Button>
+                  <p className={styles.todoText}>{book.value}</p>
                 </div>
               </ListGroup.Item>
             ))

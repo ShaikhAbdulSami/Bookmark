@@ -7,20 +7,20 @@ const faunadb = require("faunadb"),
     secret: process.env.FAUNADB_ADMIN_SECRET,
   })
 
-const typeDefs = gql`
+  const typeDefs = gql`
   type Query {
-    todos: [Todo]!
+    bookmark: [Bookmark!]    
   }
-  type Todo{
-      id: ID!
-      value: String!
-      done: Boolean!
+  type Bookmark{
+    id: ID!
+    title: String!
+    url: String!
   }
-  type Mutation{
-      addTodo(value: String!):Todo
-      updateTodoDone(id: ID!): Todo
+  type Mutation {
+    addBookmark(url: String!, title: String!) : Bookmark
+    removeBookmark(id: ID!): Bookmark
   }
-`;
+`
 
 const resolvers = {
   Query: {
@@ -33,13 +33,13 @@ const resolvers = {
         try{
         
         const results = await client.query(
-          q.Paginate(q.Match(q.Index("filter_todos_owner"), user))
+          q.Paginate(q.Match(q.Index("demo-url"), user))
       )
 
-      return results.data.map(([ref,value,done])=>({
+      return results.data.map(([ref,url,title])=>({
         id: ref.id,
-        value,
-        done
+        url,
+        title
       }))
 
     }
@@ -51,23 +51,20 @@ const resolvers = {
 
 
     }
-
-
-
     }
   },
   Mutation:{
-      addTodo: async (_,{value},{user})=>{
+      addTodo: async (_,{url,title},{user})=>{
 
         if (!user){
           throw new Error ("Must be authenticated to insert todos")
         }
         
         const results = await client.query(
-          q.Create(q.Collection("todos"),{
+          q.Create(q.Collection("Links"),{
           data:{
-              value: value,
-              done: false,
+              url,
+              title,
               owner: user
           } 
           })
@@ -80,29 +77,23 @@ const resolvers = {
         }
         )
       },
-      updateTodoDone: async (_,{id}, {user})=>{
+      removeBookmark: async (_, {id}) => {
 
-        if (!user){
-          throw new Error ("Must be authenticated to update todos")
+        console.log(id)
+        try {
+          var client = new faunadb.Client({ secret: FAUNADB_ADMIN_SECRET });
+          var result = await client.query(
+
+            q.Delete(q.Ref(q.Collection("Links"), id))
+  
+          );
+
+          return result.ref.data
+  
+        } 
+        catch (error){
+            console.log('Error: ',error);
         }
-
-        const results = await client.query(
-          q.Update(q.Ref(q.Collection("todos"),id),
-          {
-          data:{
-              done:true
-          }
-      }
-          )
-      )
-
-      return (
-        {
-          ...results.data,
-          id: results.ref.id
-        }
-      )
-
       }
   }
 };
