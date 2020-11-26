@@ -50,7 +50,7 @@ export default function UserArea(props: RouteComponentProps) {
     console.log(id);
     removeBookmark({
       variables: {
-        id: id,
+        id
       },
       refetchQueries: [{ query: BookMarksQuery }],
     });
@@ -121,7 +121,12 @@ export default function UserArea(props: RouteComponentProps) {
             data.bookmark.map(book => (
               <ListGroup.Item key={book.id}>
                 <div>
-                  <Button onClick={() => removeBookmarkSubmit(book.id)}>DELETE</Button>
+                  <Button onClick={async () => {
+                            await removeBookmarkSubmit(book.id)
+                            console.log("before", book.id)
+                            await refetch()
+                          }}>DELETE
+                    </Button>
                   <p className={styles.todoText}>{book.title}</p>
                   <br />
                   <p className={styles.todoText}>{book.url}</p>
